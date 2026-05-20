@@ -18,6 +18,8 @@
 * No file storage, no images in notes.
 * Raw SQL only (no ORM); custom migrations script.
 * No password reset, no email confirmation, no outbound email sending.
+* No `context_text` field or derived plain-text context column.
+* No query parameters, search UI, or user-facing filtering of notes.
 * Minimal but **proper error handling** (no sensitive detail leakage).
 * Custom **404 page**.
 * Styling: “elegant acqua colors”.
@@ -29,9 +31,10 @@
 ### Rendering and data access
 
 * Use Next.js App Router.
-* Use **React Server Components** for all note data reads.
-* Use **Server Functions (Server Actions)** for all note mutations.
-* Do not use client-side data fetching for initial note/page data (`useEffect() + fetch()` etc.).
+* Use **React Server Components** for all note data reads, including list/detail/shared-note reads.
+* Use **Server Functions (Server Actions)** for all note/share mutations.
+* Do not create separate JSON/API endpoints for note reads or writes, except better-auth integration routes required by the library.
+* Do not use client-side data fetching for note/page data (`useEffect() + fetch()` etc.).
 * Client Components only for TipTap editor UI and minimal interactivity.
 
 ### Auth
@@ -50,6 +53,7 @@
 * Store:
 
   * `content_json` (TipTap JSON string).
+  * No `context_text`; do not store extracted text, snippets, embeddings, or search helper columns.
 * Render:
 
   * TipTap JSON → HTML on server.
@@ -76,11 +80,19 @@
 
 * `app/not-found.tsx` custom 404 for missing pages/resources.
 
+### Unsupported URL behavior
+
+* Do not implement query params on UI routes.
+* Do not implement search, filtering, sorting controls, or list variants beyond the default `/notes` list sorted by `updated_at DESC`.
+* If query params are present, ignore them for rendering and data access; they must not alter returned notes.
+
 ---
 
 ## 3) Server Functions (Server Actions)
 
 Mutations are implemented as Server Actions invoked from forms and client interactions. Reads are done in Server Components by directly calling server-side data-access functions.
+
+Do not implement note mutation route handlers or client-side `fetch()` calls for note mutations. The only allowed mutation path for notes/shares is a Server Action.
 
 ### Auth integration
 
@@ -336,7 +348,7 @@ LIMIT 1;
 
 ### Content storage
 
-* Client sends TipTap JSON object.
+* Client sends TipTap JSON object to Server Actions.
 * Server validates:
 
   * JSON parseable
@@ -358,7 +370,7 @@ LIMIT 1;
 
 ### Client
 
-* On editor changes, debounce (e.g. 800–1200ms) and invoke `updateNoteAction`.
+* On editor changes, debounce (e.g. 800–1200ms) and invoke `updateNoteAction` as a Server Action.
 * Track “saving / saved / error” UI state.
 * Avoid save storms:
 
@@ -430,7 +442,7 @@ Suggested `code` values:
 
 ### Required pages UI states
 
-* Loading states for note fetch and share fetch.
+* Loading states for note reads/share reads via RSC boundaries where useful.
 * Empty list state for `/notes`.
 * Inline validation messages (generic).
 
@@ -475,4 +487,6 @@ Suggested `code` values:
 6. Unauthorized access to `/notes/*` redirects to `/login`.
 7. Custom 404 page shown for missing routes/resources.
 8. Errors shown to user are generic; server logs contain details.
-
+9. Note reads are implemented with React Server Components, not `useEffect() + fetch()`.
+10. Note/share mutations are implemented with Server Actions, not custom mutation API routes.
+11. Notes do not include `context_text`, search indexes, query-param behavior, or user-facing filters.

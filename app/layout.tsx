@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { LogoutButton } from "@/src/components/logout-button";
+import { getCurrentSession } from "@/src/lib/session";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -7,11 +9,14 @@ export const metadata: Metadata = {
   description: "Private notes with simple public sharing.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getCurrentSession();
+  const isAuthenticated = session !== null;
+
   return (
     <html lang="en">
       <body className="min-h-screen bg-[var(--background)] antialiased">
@@ -25,18 +30,32 @@ export default function RootLayout({
                 TinyNotes
               </Link>
               <nav aria-label="Account navigation" className="flex items-center gap-2">
-                <Link
-                  className="rounded-md px-3 py-2 text-sm font-medium text-[var(--muted)] transition hover:bg-[var(--acc-soft)] hover:text-[var(--foreground)]"
-                  href="/login"
-                >
-                  Login
-                </Link>
-                <Link
-                  className="rounded-md bg-[var(--acc-strong)] px-3 py-2 text-sm font-semibold text-white shadow-sm shadow-teal-950/10 transition hover:bg-teal-800"
-                  href="/register"
-                >
-                  Register
-                </Link>
+                {isAuthenticated ? (
+                  <>
+                    <Link
+                      className="rounded-md px-3 py-2 text-sm font-medium text-[var(--muted)] transition hover:bg-[var(--acc-soft)] hover:text-[var(--foreground)]"
+                      href="/notes"
+                    >
+                      Notes
+                    </Link>
+                    <LogoutButton />
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      className="rounded-md px-3 py-2 text-sm font-medium text-[var(--muted)] transition hover:bg-[var(--acc-soft)] hover:text-[var(--foreground)]"
+                      href="/login"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      className="rounded-md bg-[var(--acc-strong)] px-3 py-2 text-sm font-semibold text-white shadow-sm shadow-teal-950/10 transition hover:bg-teal-800"
+                      href="/register"
+                    >
+                      Register
+                    </Link>
+                  </>
+                )}
               </nav>
             </div>
           </header>

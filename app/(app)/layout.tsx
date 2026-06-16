@@ -1,13 +1,7 @@
-import { PageShell } from "@/src/components/page-shell";
-
 export default function AppLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <PageShell eyebrow="Authenticated app routes" navItems={["Notes", "New note", "Account"]}>
-      {children}
-    </PageShell>
-  );
+  return <div className="flex flex-1 flex-col gap-10">{children}</div>;
 }

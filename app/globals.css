@@ -16,12 +16,12 @@
   --color-acc-soft: var(--acc-soft);
   --color-acc-border: var(--acc-border);
   --color-acc-strong: var(--acc-strong);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: "Courier New", Courier, monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }

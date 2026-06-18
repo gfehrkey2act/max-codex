@@ -25,3 +25,77 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.tiptap-editor-content {
+  min-height: 360px;
+  padding: 1.25rem;
+  outline: none;
+}
+
+.tiptap-editor-content p {
+  margin: 0.75rem 0;
+}
+
+.tiptap-editor-content h1 {
+  margin: 1rem 0 0.75rem;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.tiptap-editor-content h2 {
+  margin: 1rem 0 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.tiptap-editor-content ul,
+.tiptap-editor-content ol {
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+
+.tiptap-editor-content ul {
+  list-style: disc;
+}
+
+.tiptap-editor-content ol {
+  list-style: decimal;
+}
+
+.tiptap-editor-content blockquote {
+  margin: 1rem 0;
+  border-left: 4px solid var(--acc-border);
+  padding-left: 1rem;
+  color: var(--muted);
+}
+
+.tiptap-editor-content pre {
+  margin: 1rem 0;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  background: #10201f;
+  padding: 1rem;
+  color: #f5fbfa;
+}
+
+.tiptap-editor-content code {
+  border-radius: 0.25rem;
+  background: var(--acc-soft);
+  padding: 0.125rem 0.25rem;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.tiptap-editor-content pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.tiptap-editor-content .is-editor-empty:first-child::before {
+  color: var(--muted);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}

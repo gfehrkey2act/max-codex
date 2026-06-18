@@ -1,22 +1,42 @@
-import { PageHeader } from "@/src/components/page-header";
-import { PlaceholderGrid } from "@/src/components/placeholder-grid";
-import { PlaceholderPanel } from "@/src/components/placeholder-panel";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { NoteEditor } from "@/src/components/note-editor";
+import { getNoteForUser } from "@/src/lib/notes";
+import { getCurrentSession } from "@/src/lib/session";
 
-export default function NoteDetailPage() {
+type NoteDetailPageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
+  const [{ id }, session] = await Promise.all([params, getCurrentSession()]);
+
+  if (session === null) {
+    notFound();
+  }
+
+  const note = getNoteForUser(id, session.user.id);
+
+  if (note === null) {
+    notFound();
+  }
+
   return (
-    <>
-      <PageHeader
-        description="Placeholder route for the future note editor and share controls."
-        title="Note Detail"
+    <div className="flex flex-col gap-6">
+      <Link
+        className="w-fit text-sm font-semibold text-[var(--acc-strong)] underline-offset-4 hover:underline"
+        href="/notes"
+      >
+        Back to notes
+      </Link>
+      <NoteEditor
+        contentJson={note.contentJson}
+        id={note.id}
+        title={note.title}
+        updatedAt={note.updatedAt}
       />
-      <PlaceholderGrid>
-        <PlaceholderPanel label="Editor placeholder" title="Existing note">
-          <p>Owned note content will be loaded and edited here later.</p>
-        </PlaceholderPanel>
-        <PlaceholderPanel label="Share placeholder" title="Public link controls">
-          <p>Enable and disable share controls will be added after note actions exist.</p>
-        </PlaceholderPanel>
-      </PlaceholderGrid>
-    </>
+    </div>
   );
 }

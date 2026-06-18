@@ -27,7 +27,7 @@ function createDatabase(): Database {
   return database;
 }
 
-const database = globalForDatabase.tinyNotesDatabase ?? createDatabase();
+export const database = globalForDatabase.tinyNotesDatabase ?? createDatabase();
 
 if (process.env.NODE_ENV !== "production") {
   globalForDatabase.tinyNotesDatabase = database;
